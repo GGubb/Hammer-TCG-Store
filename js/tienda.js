@@ -35,7 +35,7 @@ categoriaBtns.forEach(btn => {
 
 // ===================== CARGAR PRODUCTOS =====================
 async function cargarProductosEnCategoria(tcG) {
-  let query = supabase.from("productos").select("*").eq("disponible", true);
+  let query = supabase.from("productos").select("*");
 
   if (tcG === "Preventas") {
     // Solo productos en preventa
@@ -64,20 +64,72 @@ async function cargarProductosEnCategoria(tcG) {
   productos.forEach(p => {
     const card = document.createElement("div");
     card.classList.add("producto-card");
-    card.innerHTML = `
+    card.style.position = "relative"; // para el badge
+
+    // Badge "SIN STOCK"
+    if (!p.disponible) {
+      card.style.filter = "grayscale(100%) opacity(0.5)";
+      const badgeStock = document.createElement("div");
+      badgeStock.textContent = "SIN STOCK";
+      badgeStock.style.position = "absolute";
+      badgeStock.style.top = "10px";
+      badgeStock.style.right = "10px";
+      badgeStock.style.backgroundColor = "rgba(217, 83, 79, 0.9)";
+      badgeStock.style.color = "white";
+      badgeStock.style.padding = "5px 10px";
+      badgeStock.style.fontWeight = "bold";
+      badgeStock.style.borderRadius = "5px";
+      badgeStock.style.fontSize = "0.9em";
+      card.appendChild(badgeStock);
+    }
+
+    // Badge "OFERTA" si existe descuento
+    if (p.oferta && p.cantidad_oferta) {
+      const badgeOferta = document.createElement("div");
+      badgeOferta.textContent = `${p.cantidad_oferta}% OFF`;
+      badgeOferta.style.position = "absolute";
+      badgeOferta.style.top = "10px";
+      badgeOferta.style.left = "10px";
+      badgeOferta.style.backgroundColor = "rgba(255, 165, 0, 0.9)";
+      badgeOferta.style.color = "white";
+      badgeOferta.style.padding = "5px 10px";
+      badgeOferta.style.fontWeight = "bold";
+      badgeOferta.style.borderRadius = "5px";
+      badgeOferta.style.fontSize = "0.9em";
+      card.appendChild(badgeOferta);
+    }
+
+    // Calcular precio con descuento
+    let precioHTML = `<strong class="precio">$${p.precio.toLocaleString()}</strong>`;
+    if (p.oferta && p.cantidad_oferta) {
+      const precioConDescuento = Math.round(p.precio * (1 - p.cantidad_oferta / 100));
+      precioHTML = `
+        <strong class="precio-normal" style="text-decoration: line-through; color: gray;">
+          $${p.precio.toLocaleString()}
+        </strong>
+        <strong class="precio-oferta" style="color:#d9534f; display:block; margin-top:5px;">
+          $${precioConDescuento.toLocaleString()}
+        </strong>
+      `;
+    }
+
+    card.innerHTML += `
       <img src="${p.imagen}" alt="${p.nombre}">
       <div class="info">
         <h3 title="${p.nombre}">${p.nombre}</h3>
         <p>${p.descripcion}</p>
-        <strong class="precio">$${p.precio}</strong>
+        ${precioHTML}
       </div>
     `;
+
     card.addEventListener("click", () => {
       mostrarSeccion("detalle-producto");
       mostrarDetalleProducto(p.id);
     });
+
     contenedor.appendChild(card);
   });
+
 }
 
 // ===================== BUSCADOR DE CATEGORÍAS =====================
@@ -270,7 +322,27 @@ async function mostrarDetalleProducto(id) {
         </div>
         <div class="detalle-info">
           <h1 class="detalle-nombre">${producto.nombre}</h1>
-          <p class="detalle-precio">$${producto.precio.toLocaleString()}</p>
+          <!-- Mostrar precio con o sin oferta -->
+          ${
+            producto.oferta && producto.cantidad_oferta
+              ? `
+                  <p class="detalle-precio">
+                    <span style="text-decoration: line-through; color: gray;">
+                      $${producto.precio.toLocaleString()}
+                    </span><br>
+                    <span style="color:#d9534f; font-weight:bold; font-size:1.2em;">
+                      $${Math.round(producto.precio * (1 - producto.cantidad_oferta / 100)).toLocaleString()}
+                    </span>
+                    <span style="background-color:#ffa500; color:white; font-weight:bold; padding:3px 8px; border-radius:5px; margin-left:8px;">
+                      ${producto.cantidad_oferta}% OFF
+                    </span>
+                  </p>
+                `
+              : `<p class="detalle-precio">$${producto.precio.toLocaleString()}</p>`
+          }
+          <p class="detalle-stock" style="color:${producto.disponible ? '#28a745' : '#d9534f'};">
+            ${producto.disponible ? '✔ En Stock' : '✖ Sin Stock'}
+          </p>
         </div>
       </div>
       <div class="detalle-descripcion">
@@ -278,6 +350,7 @@ async function mostrarDetalleProducto(id) {
       </div>
     </div>
   `;
+
 
   let relacionadosQuery = supabase.from("productos").select("*").neq("id", id).limit(3);
   if (producto.TCG) {
@@ -396,7 +469,6 @@ async function cargarProductosPreventa() {
   const { data: productos, error } = await supabase
     .from("productos")
     .select("*")
-    .eq("disponible", true)
     .eq("preventa", true);
 
   if (error || !productos || productos.length === 0) {
@@ -410,7 +482,59 @@ async function cargarProductosPreventa() {
   productos.forEach(p => {
     const card = document.createElement("div");
     card.classList.add("producto-card");
-    card.innerHTML = `
+    card.style.position = "relative"; // para el badge
+
+    // Aplicar filtro si no está disponible
+    if (!p.disponible) {
+      card.style.filter = "grayscale(100%) opacity(0.5)";
+
+      // Badge "SIN STOCK"
+      const badge = document.createElement("div");
+      badge.textContent = "SIN STOCK";
+      badge.style.position = "absolute";
+      badge.style.top = "10px";
+      badge.style.right = "10px";
+      badge.style.backgroundColor = "rgba(217, 83, 79, 0.9)";
+      badge.style.color = "white";
+      badge.style.padding = "5px 10px";
+      badge.style.fontWeight = "bold";
+      badge.style.borderRadius = "5px";
+      badge.style.fontSize = "0.9em";
+      card.appendChild(badge);
+    }
+
+    // Badge "OFERTA" si existe descuento
+    if (p.oferta && p.cantidad_oferta) {
+      const badgeOferta = document.createElement("div");
+      badgeOferta.textContent = `${p.cantidad_oferta}% OFF`;
+      badgeOferta.style.position = "absolute";
+      badgeOferta.style.top = "10px";
+      badgeOferta.style.left = "10px";
+      badgeOferta.style.backgroundColor = "rgba(255, 165, 0, 0.9)";
+      badgeOferta.style.color = "white";
+      badgeOferta.style.padding = "5px 10px";
+      badgeOferta.style.fontWeight = "bold";
+      badgeOferta.style.borderRadius = "5px";
+      badgeOferta.style.fontSize = "0.9em";
+      card.appendChild(badgeOferta);
+    }
+
+    // Calcular precio con descuento
+    let precioHTML = `<strong class="precio">$${p.precio.toLocaleString()}</strong>`;
+    if (p.oferta && p.cantidad_oferta) {
+      const precioConDescuento = Math.round(p.precio * (1 - p.cantidad_oferta / 100));
+      precioHTML = `
+        <strong class="precio-normal" style="text-decoration: line-through; color: gray;">
+          $${p.precio.toLocaleString()}
+        </strong>
+        <strong class="precio-oferta" style="color:#d9534f; display:block; margin-top:5px;">
+          $${precioConDescuento.toLocaleString()}
+        </strong>
+      `;
+    }
+
+
+    card.innerHTML += `
       <img src="${p.imagen}" alt="${p.nombre}">
       <div class="info">
         <h3 title="${p.nombre}">${p.nombre}</h3>
@@ -418,10 +542,12 @@ async function cargarProductosPreventa() {
         <strong class="precio">$${p.precio.toLocaleString()}</strong>
       </div>
     `;
+
     card.addEventListener("click", () => {
       mostrarSeccion("detalle-producto");
       mostrarDetalleProducto(p.id);
     });
+
     contenedor.appendChild(card);
   });
 }
@@ -434,8 +560,7 @@ async function cargarProductosDestacados() {
   const { data: productos, error } = await supabase
     .from("productos")
     .select("*")
-    .eq("disponible", true)
-    .eq("destacado", true);
+    .eq("destacado", true);;
 
   if (error || !productos || productos.length === 0) {
     contenedor.innerHTML = "<p>No hay productos destacados en este momento.</p>";
