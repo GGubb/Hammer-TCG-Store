@@ -33,73 +33,149 @@ categoriaBtns.forEach(btn => {
   });
 });
 
-// ===================== CARGAR PRODUCTOS =====================
+// ===================== CARGAR PRODUCTOS EN CATEGORÍA =====================
 async function cargarProductosEnCategoria(tcG) {
   let query = supabase.from("productos").select("*");
 
   if (tcG === "Preventas") {
-    // Solo productos en preventa
     query = query.eq("preventa", true);
   } else {
-    // Excluir productos en preventa (solo aquellos con preventa marcada como true)
     query = query.or('preventa.eq.false,preventa.is.null');
 
-    if (tcG === "Otros") {
-      query = query.neq("tipo_producto", "Carta");
-    } else {
+    if (tcG === "Magic" || tcG === "Pokémon" || tcG === "One Piece") {
+      // Categorías de cartas
       query = query.eq("TCG", tcG);
+    } else {
+      // Accesorios / Otros → TCG nulo
+      query = query.is('TCG', null);
     }
   }
 
   const { data: productos, error } = await query;
 
   const contenedor = document.getElementById("productos-categoria");
+  const filtroContainer = document.getElementById("filtro-subtipo-container");
   contenedor.innerHTML = "";
+  filtroContainer.innerHTML = "";
 
   if (error || !productos || productos.length === 0) {
     contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
     return;
   }
 
-  productos.forEach(p => {
+  // ====== FILTRO DINÁMICO DE SUB-TIPO O TIPO ======
+  let filtroOpciones;
+  let esCarta = false;
+
+  if (tcG === "Magic" || tcG === "Pokémon" || tcG === "One Piece") {
+    // Cartas → sub_tipo_producto
+    filtroOpciones = [...new Set(productos.map(p => p.sub_tipo_producto).filter(Boolean))];
+    esCarta = true;
+  } else {
+    // Accesorios → tipo_producto
+    filtroOpciones = [...new Set(productos.map(p => p.tipo_producto).filter(Boolean))];
+    // Aseguramos que siempre aparezcan todas las opciones
+    const opcionesAccesorios = ["Carpeta", "Protector", "Caja para deck", "Otro"];
+    opcionesAccesorios.forEach(op => {
+      if (!filtroOpciones.includes(op)) filtroOpciones.push(op);
+    });
+  }
+
+  // ====== CREAR SELECT DE FILTRO ======
+  if (filtroOpciones.length > 0) {
+    const selectSubtipo = document.createElement("select");
+    selectSubtipo.id = "filtro-subtipo";
+    selectSubtipo.innerHTML = `<option value="">Todos los tipos</option>` +
+      filtroOpciones.map(st => `<option value="${st}">${st}</option>`).join("");
+    filtroContainer.appendChild(selectSubtipo);
+
+    selectSubtipo.addEventListener("change", () => {
+      const orden = document.getElementById("filtro-orden")?.value || "precio-asc";
+      mostrarProductosFiltrados(productos, selectSubtipo.value, orden, esCarta);
+    });
+  }
+
+  // ====== CREAR SELECT DE ORDENAMIENTO ======
+  const ordenOptions = [
+    { value: "precio-asc", label: "Precio: más barato → más caro" },
+    { value: "precio-desc", label: "Precio: más caro → más barato" },
+    { value: "nombre-asc", label: "Nombre: A → Z" },
+    { value: "nombre-desc", label: "Nombre: Z → A" }
+  ];
+
+  const selectOrden = document.createElement("select");
+  selectOrden.id = "filtro-orden";
+  selectOrden.innerHTML = ordenOptions.map(o => `<option value="${o.value}">${o.label}</option>`).join("");
+  filtroContainer.appendChild(selectOrden);
+
+  // Orden por defecto
+  selectOrden.value = "precio-asc";
+
+  selectOrden.addEventListener("change", () => {
+    const subTipo = document.getElementById("filtro-subtipo")?.value || "";
+    mostrarProductosFiltrados(productos, subTipo, selectOrden.value, esCarta);
+  });
+
+  // ====== MOSTRAR PRODUCTOS INICIALMENTE ======
+  mostrarProductosFiltrados(productos, "", "precio-asc", esCarta);
+}
+
+// ===================== FUNCION PARA MOSTRAR PRODUCTOS FILTRADOS =====================
+function mostrarProductosFiltrados(productos, subTipoSeleccionado, orden = "precio-asc", esCarta = true) {
+  const contenedor = document.getElementById("productos-categoria");
+  contenedor.innerHTML = "";
+
+  let filtrados;
+
+  if (subTipoSeleccionado) {
+    if (esCarta) {
+      filtrados = productos.filter(p => p.sub_tipo_producto === subTipoSeleccionado);
+    } else {
+      filtrados = productos.filter(p => p.tipo_producto === subTipoSeleccionado);
+    }
+  } else {
+    filtrados = [...productos];
+  }
+
+  // ====== ORDENAR SEGÚN SELECCIÓN ======
+  filtrados.sort((a, b) => {
+    switch (orden) {
+      case "precio-asc": return a.precio - b.precio;
+      case "precio-desc": return b.precio - a.precio;
+      case "nombre-asc": return a.nombre.localeCompare(b.nombre);
+      case "nombre-desc": return b.nombre.localeCompare(a.nombre);
+      default: return 0;
+    }
+  });
+
+  if (filtrados.length === 0) {
+    contenedor.innerHTML = "<p>No hay productos disponibles.</p>";
+    return;
+  }
+
+  filtrados.forEach(p => {
     const card = document.createElement("div");
     card.classList.add("producto-card");
-    card.style.position = "relative"; // para el badge
+    card.style.position = "relative";
 
-    // Badge "SIN STOCK"
+    // ===== BADGE SIN STOCK =====
     if (!p.disponible) {
-      card.style.filter = "grayscale(100%) opacity(0.5)";
       const badgeStock = document.createElement("div");
       badgeStock.textContent = "SIN STOCK";
-      badgeStock.style.position = "absolute";
-      badgeStock.style.top = "10px";
-      badgeStock.style.right = "10px";
-      badgeStock.style.backgroundColor = "rgba(217, 83, 79, 0.9)";
-      badgeStock.style.color = "white";
-      badgeStock.style.padding = "5px 10px";
-      badgeStock.style.fontWeight = "bold";
-      badgeStock.style.borderRadius = "5px";
-      badgeStock.style.fontSize = "0.9em";
+      badgeStock.style.cssText = "position:absolute;top:10px;right:10px;background-color:rgba(217,83,79,0.9);color:white;padding:5px 10px;font-weight:bold;border-radius:5px;font-size:0.9em;";
       card.appendChild(badgeStock);
+      card.style.filter = "grayscale(100%) opacity(0.5)";
     }
 
-    // Badge "OFERTA" si existe descuento
+    // ===== BADGE OFERTA =====
     if (p.oferta && p.cantidad_oferta) {
       const badgeOferta = document.createElement("div");
       badgeOferta.textContent = `${p.cantidad_oferta}% OFF`;
-      badgeOferta.style.position = "absolute";
-      badgeOferta.style.top = "10px";
-      badgeOferta.style.left = "10px";
-      badgeOferta.style.backgroundColor = "rgba(255, 165, 0, 0.9)";
-      badgeOferta.style.color = "white";
-      badgeOferta.style.padding = "5px 10px";
-      badgeOferta.style.fontWeight = "bold";
-      badgeOferta.style.borderRadius = "5px";
-      badgeOferta.style.fontSize = "0.9em";
+      badgeOferta.style.cssText = "position:absolute;top:10px;left:10px;background-color:rgba(255,165,0,0.9);color:white;padding:5px 10px;font-weight:bold;border-radius:5px;font-size:0.9em;";
       card.appendChild(badgeOferta);
     }
 
-    // Calcular precio con descuento
+    // ===== PRECIO =====
     let precioHTML = `<strong class="precio">$${p.precio.toLocaleString()}</strong>`;
     if (p.oferta && p.cantidad_oferta) {
       const precioConDescuento = Math.round(p.precio * (1 - p.cantidad_oferta / 100));
@@ -129,7 +205,6 @@ async function cargarProductosEnCategoria(tcG) {
 
     contenedor.appendChild(card);
   });
-
 }
 
 // ===================== BUSCADOR DE CATEGORÍAS =====================
@@ -591,26 +666,41 @@ async function cargarProductosDestacados() {
   });
 }
 
-// ===================== CARGAR LOGO =====================
+// ===================== CARGAR LOGO Y FAVICON =====================
 async function cargarLogo() {
-  const { data, error } = await supabase
+  // ----- Logo principal -----
+  const { data: logoData, error: logoError } = await supabase
     .from("contenido_publico")
     .select("imagen")
     .eq("tipo", "logo_arriba")
     .single();
 
-  if (error || !data) {
-    console.warn("No se encontró logo, usando texto por defecto.");
-    return;
-  }
-
   const logoImg = document.getElementById("logo-img");
   const logoText = document.getElementById("logo-text");
 
-  logoImg.src = data.imagen;
-  logoImg.style.display = "block";
-  logoText.style.display = "none";
+  if (logoError || !logoData) {
+    console.warn("No se encontró logo, usando texto por defecto.");
+  } else {
+    logoImg.src = logoData.imagen;
+    logoImg.style.display = "block";
+    logoText.style.display = "none";
+  }
+
+  // ----- Favicon -----
+  const { data: faviconData, error: faviconError } = await supabase
+    .from("contenido_publico")
+    .select("imagen")
+    .eq("tipo", "logo_pestaña")
+    .single();
+
+  if (faviconError || !faviconData) {
+    console.warn("No se encontró favicon en contenido_publico");
+  } else {
+    const favicon = document.getElementById("favicon");
+    if (favicon) favicon.href = faviconData.imagen;
+  }
 }
+
 
 // ===================== LOGO INTERACTIVO (Easter Egg) =====================
 document.addEventListener("DOMContentLoaded", () => {

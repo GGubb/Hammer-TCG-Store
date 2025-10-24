@@ -518,6 +518,63 @@ body {
 }
 
 /* =========================
+   CONTENEDOR DE FILTROS
+========================= */
+#filtros-container {
+  display: flex;
+  align-items: center;    /* centra verticalmente los selects */
+  margin: 15px 30px;      /* separación general respecto a toolbar */
+  gap: 15px;              /* espacio uniforme entre sub-tipo y orden */
+}
+
+/* =========================
+   FILTRO DE SUB-TIPO
+========================= */
+#filtro-subtipo-container {
+  display: block;         /* ya lo controla el flex, no necesitamos inline-block */
+}
+
+#filtro-subtipo {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #fff;
+  cursor: pointer;
+}
+
+#filtro-subtipo option {
+  background-color: #222;
+  color: #fff;
+}
+
+/* =========================
+   FILTRO DE ORDENAMIENTO
+========================= */
+#filtro-orden-container {
+  display: block;         
+}
+
+#filtro-orden {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: #fff;
+  cursor: pointer;
+}
+
+#filtro-orden option {
+  background-color: #222;
+  color: #fff;
+}
+
+#filtro-orden:hover {
+  border-color: #666;
+}
+
+
+/* =========================
    EVENTOS 
 ========================= */
 #eventos-container {
@@ -1122,6 +1179,8 @@ html, body {
   flex: 1;
   margin-top: 0;
   text-align: left;
+  margin-left: 10px;
+  margin-right: 40px;
 }
 
 #productos-categoria.productos-list .producto-card h3 {
@@ -1135,11 +1194,13 @@ html, body {
   font-size: 14px;
   line-height: 1.4;
   margin-bottom: 10px;
+
 }
 
 #productos-categoria.productos-list .producto-card .precio {
   font-size: 16px;
   color: #ff9934;
+  margin-bottom: 10px;
 }
 
 .detalle-stock {
