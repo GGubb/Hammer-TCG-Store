@@ -1325,3 +1325,147 @@ html, body {
   z-index: 10;
   box-shadow: 0 2px 5px rgba(0,0,0,0.4);
 }
+
+
+/* ===================================================
+   Configuracion para Celulares y dispositivos Moviles
+======================================================*/
+
+/* 📱 ———— TABLETS (≤ 992px) ———— */
+@media (max-width: 992px) {
+  /* Header */
+  .header {
+    padding: 15px 25px;
+  }
+
+  .nav a {
+    margin-left: 10px;
+    font-size: 0.95rem;
+  }
+
+  /* Productos */
+  #productos-preventa,
+  #productos-destacados {
+    gap: 20px;
+    padding: 40px 20px;
+  }
+
+  .producto-card {
+    width: 45%; /* dos por fila */
+  }
+
+  /* Footer */
+  .footer-container {
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer-col {
+    flex: 1 1 40%;
+    min-width: 200px;
+  }
+}
+
+/* 📲 ———— CELULARES GRANDES (≤ 768px) ———— */
+@media (max-width: 768px) {
+  /* Header: logo arriba, menú abajo */
+  .header {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav a {
+    margin: 8px;
+    font-size: 0.9rem;
+  }
+
+  /* Carrusel */
+  .carousel {
+    height: auto;
+  }
+
+  .carousel img {
+    height: auto;
+    width: 100%;
+  }
+
+  /* Productos */
+  .producto-card {
+    width: 90%; /* una por fila */
+    max-width: 320px;
+  }
+
+  .producto-card img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Detalle producto */
+  .detalle-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .detalle-imagen {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+  }
+
+  .detalle-info {
+    text-align: center;
+    width: 90%;
+  }
+
+  /* Footer */
+  .footer-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-col {
+    flex: 1 1 100%;
+    min-width: unset;
+  }
+}
+
+/* 📞 ———— CELULARES PEQUEÑOS (≤ 480px) ———— */
+@media (max-width: 480px) {
+  html {
+    font-size: 15px;
+  }
+
+  .header {
+    padding: 8px 10px;
+  }
+
+  .logo img {
+    width: 120px;
+  }
+
+  .nav a {
+    margin: 5px;
+    font-size: 0.85rem;
+  }
+
+  .producto-card {
+    width: 95%;
+  }
+
+  .footer-container {
+    gap: 25px;
+  }
+
+  .footer-col h4 {
+    font-size: 1rem;
+  }
+}
