@@ -266,6 +266,64 @@ body {
 .next { right: 10px; }
 
 /* =========================
+   Carrousel mobil
+========================= */
+/* =========================
+   Responsive Carrusel
+========================= */
+@media (max-width: 768px) {
+  .carousel {
+    height: 250px; /* menor altura para móviles */
+  }
+
+  .slide-content {
+    bottom: 20px;
+    right: 10px;
+    width: 90%;      /* ocupa casi todo el ancho */
+    height: auto;    /* que el contenido se ajuste */
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .buy-btn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    margin-top: -10px;
+  }
+
+  .prev, .next {
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel {
+    height: 200px; /* aún más pequeña para celulares muy pequeños */
+  }
+
+  .slide-content {
+    bottom: 15px;
+    right: 5px;
+    width: 95%;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  .buy-btn {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    margin-top: -8px;
+  }
+
+  .prev, .next {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2rem;
+  }
+}
+/* =========================
    PRODUCTOS
 ========================= */
 .producto-card {
