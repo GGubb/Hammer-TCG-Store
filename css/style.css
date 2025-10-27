@@ -460,7 +460,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: flex-start;
+  justify-content: center; /* Si cambio esto se cambie como se acomodan los productos*/
 }
 
 #productos-categoria.productos-list {
@@ -865,7 +865,6 @@ html, body {
   overflow-x: hidden;
 }
 
-
 /* =================== FOOTER =================== */
 .footer {
   width: 100%;
@@ -881,32 +880,34 @@ html, body {
 
 .footer-container {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 60px;
+  justify-content: space-between; /* Mantiene la distribución */
+  align-items: flex-start;
+  flex-wrap: wrap; /* Permite que se adapte si el ancho no alcanza */
+  gap: 60px; /* Usa gap en lugar de margin-right */
   max-width: 1200px;
   width: 100%;
-  box-sizing: border-box; /* muy importante */
+  box-sizing: border-box;
   margin: 0 auto;
 }
 
 .footer-col {
-  flex: 1 1 250px;
-  min-width: 250px;
+  flex: 0 0 calc(25% - 50px); /* 25% del contenedor menos un ajuste por el gap */
+  min-width: 220px;
+}
+
+/* Logo + descripción */
+.footer-logo {
+  display: flex;
+  align-items: center; /* <-- centra verticalmente la imagen con el texto */
+  gap: 12px; /* <-- espacio entre logo y texto */
+  margin-bottom: 10px;
 }
 
 .footer-logo img {
+  margin-left: -15px;
   height: 60px;
   width: auto;
-  margin-bottom: 10px;
-}
-
-.footer-logo span {
   display: block;
-  font-size: 22px;
-  font-weight: 700;
-  color: #fefefe;
-  margin-bottom: 10px;
 }
 
 .footer-desc {
@@ -916,15 +917,17 @@ html, body {
   line-height: 1.6;
 }
 
+/* Títulos */
 .footer-col h3 {
   font-size: 14px;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.5px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-transform: uppercase;
 }
 
+/* Texto general */
 .footer-col p {
   font-size: 15px;
   color: #bbb;
@@ -962,6 +965,7 @@ html, body {
   color: #ccc;
 }
 
+/* Separador inferior */
 .footer-copy {
   font-size: 13px;
   color: #888;
@@ -979,6 +983,12 @@ html, body {
 .footer-social a:hover span {
   color: #fff;
 }
+
+.footer-col:nth-child(3) {
+  margin-left: -40px;
+}
+
+
 
 /* =========================
    PREVENTAS

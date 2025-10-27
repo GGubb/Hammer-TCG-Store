@@ -42,7 +42,7 @@ async function cargarProductosEnCategoria(tcG) {
   } else {
     query = query.or('preventa.eq.false,preventa.is.null');
 
-    if (tcG === "Magic" || tcG === "Pokémon" || tcG === "One Piece") {
+    if (tcG === "Magic" || tcG === "Pokemon" || tcG === "One Piece") {
       // Categorías de cartas
       query = query.eq("TCG", tcG);
     } else {
@@ -67,7 +67,7 @@ async function cargarProductosEnCategoria(tcG) {
   let filtroOpciones;
   let esCarta = false;
 
-  if (tcG === "Magic" || tcG === "Pokémon" || tcG === "One Piece") {
+  if (tcG === "Magic" || tcG === "Pokemon" || tcG === "One Piece") {
     // Cartas → sub_tipo_producto
     filtroOpciones = [...new Set(productos.map(p => p.sub_tipo_producto).filter(Boolean))];
     esCarta = true;
