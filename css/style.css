@@ -1270,16 +1270,16 @@ html, body {
 
 
 /* ===================================================
-   Configuracion para Celulares y dispositivos Moviles
-======================================================*/
+   BLOQUE MÓVIL COMPLETO — Responsive Unificado
+====================================================== */
 
 /* 📱 ———— TABLETS (≤ 992px) ———— */
 @media (max-width: 992px) {
   /* Header */
   .header {
+    flex-direction: row;
     padding: 15px 25px;
   }
-
   .nav a {
     margin-left: 10px;
     font-size: 0.95rem;
@@ -1291,9 +1291,8 @@ html, body {
     gap: 20px;
     padding: 40px 20px;
   }
-
   .producto-card {
-    width: 45%; /* dos por fila */
+    width: 45%;
   }
 
   /* Footer */
@@ -1302,10 +1301,16 @@ html, body {
     flex-wrap: wrap;
     justify-content: center;
   }
-
   .footer-col {
     flex: 1 1 40%;
     min-width: 200px;
+  }
+
+  /* Eventos */
+  #eventos-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 15px;
   }
 }
 
@@ -1317,12 +1322,10 @@ html, body {
     align-items: center;
     padding: 10px 20px;
   }
-
   .nav {
     flex-wrap: wrap;
     justify-content: center;
   }
-
   .nav a {
     margin: 8px;
     font-size: 0.9rem;
@@ -1333,7 +1336,6 @@ html, body {
     height: auto;
     overflow: hidden;
   }
-
   .carousel img {
     height: auto;
     width: 100%;
@@ -1341,31 +1343,34 @@ html, body {
     justify-content: center;
     align-items: center;
   }
+  .slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
   /* Productos */
   .producto-card {
-    width: 50%; /* una por fila */
+    width: 50%;
     max-width: 260px;
   }
-
   .producto-card img {
     width: 100%;
     height: auto;
   }
 
   /* Detalle producto */
-  .detalle-container {
+  .detalle-container,
+  .detalle-producto-wrapper {
     flex-direction: column;
     align-items: center;
     gap: 25px;
   }
-
   .detalle-imagen {
     width: 100%;
     max-width: 320px;
     height: auto;
   }
-
   .detalle-info {
     text-align: center;
     width: 90%;
@@ -1376,20 +1381,24 @@ html, body {
     height: auto !important;
     overflow: visible;
   }
-
   .footer-container {
     flex-direction: column;
     align-items: center;
     gap: 20px;
     padding: 30px 10px;
   }
-
   .footer-col {
     min-width: unset;
     width: 100%;
     text-align: center;
   }
 
+  /* Eventos */
+  #eventos-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
 }
 
 /* 📞 ———— CELULARES PEQUEÑOS (≤ 480px) ———— */
@@ -1398,28 +1407,37 @@ html, body {
     font-size: 15px;
   }
 
+  /* Header */
   .header {
     padding: 8px 10px;
   }
-
   .logo img {
     width: 120px;
   }
-
   .nav a {
     margin: 5px;
     font-size: 0.85rem;
   }
 
+  /* Productos */
   .producto-card {
     width: 95%;
+    max-width: unset;
   }
 
+  /* Footer */
   .footer-container {
     gap: 25px;
   }
-
   .footer-col h4 {
     font-size: 1rem;
   }
+
+  /* Eventos */
+  #eventos-container {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 8px;
+  }
 }
+
