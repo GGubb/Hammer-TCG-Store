@@ -137,8 +137,13 @@ function mostrarProductosFiltrados(productos, subTipoSeleccionado, orden = "prec
     filtrados = [...productos];
   }
 
-  // ====== ORDENAR SEGÚN SELECCIÓN ======
+  // ====== ORDENAR SEGÚN SELECCIÓN Y ENVIAR SIN STOCK AL FINAL ======
   filtrados.sort((a, b) => {
+    // Primero: los productos disponibles van antes de los sin stock
+    if (!a.disponible && b.disponible) return 1;
+    if (a.disponible && !b.disponible) return -1;
+
+    // Si ambos están disponibles (o ambos sin stock), ordenar por el criterio seleccionado
     switch (orden) {
       case "precio-asc": return a.precio - b.precio;
       case "precio-desc": return b.precio - a.precio;
