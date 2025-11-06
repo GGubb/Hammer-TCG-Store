@@ -402,6 +402,7 @@ async function mostrarDetalleProducto(id) {
         </div>
         <div class="detalle-info">
           <h1 class="detalle-nombre">${producto.nombre}</h1>
+
           <!-- Mostrar precio con o sin oferta -->
           ${
             producto.oferta && producto.cantidad_oferta
@@ -420,17 +421,26 @@ async function mostrarDetalleProducto(id) {
                 `
               : `<p class="detalle-precio">$${producto.precio.toLocaleString()}</p>`
           }
+
           <p class="detalle-stock" style="color:${producto.disponible ? '#28a745' : '#d9534f'};">
             ${producto.disponible ? '✔ En Stock' : '✖ Sin Stock'}
           </p>
+
+          <!-- BOTÓN DE RESERVA SOLO SI ES PREVENTA -->
+          ${
+            producto.preventa
+              ? `<button class="btn-reserva" onclick="abrirReserva('${producto.nombre}')">Hace tu reserva</button>`
+              : ""
+          }
+
         </div>
       </div>
+
       <div class="detalle-descripcion">
         ${producto.descripcion || "Sin descripción disponible."}
       </div>
     </div>
   `;
-
 
   let relacionadosQuery = supabase.from("productos").select("*").neq("id", id).limit(3);
   if (producto.TCG) {
@@ -788,3 +798,51 @@ async function cargarFooter() {
     console.error("Error inesperado al cargar el footer:", e);
   }
 }
+
+function abrirReserva(nombreProducto) {
+  const modal = document.getElementById("modalReserva");
+  const inputProducto = document.getElementById("producto");
+  inputProducto.value = nombreProducto;
+
+  modal.style.display = "flex"; // mostrar modal
+
+  // Botón cerrar
+  modal.querySelector(".cerrar").onclick = () => {
+    modal.style.display = "none";
+  };
+
+  // Cierre si se hace clic fuera
+  window.onclick = (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  };
+}
+
+window.abrirReserva = abrirReserva;
+
+document.getElementById("formReserva").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const reserva = {
+    producto: document.getElementById("producto").value,
+    nombre: document.getElementById("nombre").value,
+    rut: document.getElementById("rut").value,
+    correo: document.getElementById("correo").value,
+    fecha: new Date().toISOString()
+  };
+
+  try {
+    const { data, error } = await supabase
+      .from("reservas")
+      .insert([reserva]);
+
+    if (error) throw error;
+
+    alert(`✅ Reserva enviada correctamente para ${reserva.producto}`);
+    document.getElementById("modalReserva").style.display = "none";
+  } catch (err) {
+    console.error(err);
+    alert("❌ Ocurrió un error al enviar la reserva.");
+  }
+});

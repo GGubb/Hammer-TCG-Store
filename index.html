@@ -176,5 +176,24 @@
 
     <div class="footer-copy">© 2025 Hammer TCG Store — Todos los derechos reservados</div>
   </footer>
+
+  <!-- Modal de reserva -->
+  <div id="modalReserva" class="modal">
+    <div class="modal-content">
+      <span class="cerrar">&times;</span>
+      <h2>Reserva tu producto</h2>
+      <p>Estos productos están sujetos a disponibilidad de distribuidores.<br>
+      En caso de no llegar la cantidad solicitada, se respetará el orden de compra. 
+      O de lo contrario será devuelto tu dinero.</p>
+
+      <form id="formReserva">
+        <input type="hidden" id="producto" name="producto">
+        <input type="text" id="nombre" placeholder="Tu nombre" required>
+        <input type="text" id="rut" placeholder="Tu RUT" required>
+        <input type="email" id="correo" placeholder="Tu correo" required>
+        <button type="submit">Enviar reserva</button>
+      </form>
+    </div>
+  </div>
 </body>
 </html>

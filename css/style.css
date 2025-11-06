@@ -460,6 +460,32 @@ body {
   transform: scale(1.05);
 }
 
+.btn-reserva {
+  display: inline-block;
+  background: linear-gradient(90deg, #ffffff, #a5a5a5);
+  color: #111;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 10px rgba(255, 165, 0, 0.2);
+}
+
+.btn-reserva:hover {
+  background: linear-gradient(90deg, #ffffff, #a5a5a5);
+  transform: translateY(-2px);
+  box-shadow: 0 0 16px rgba(59, 59, 59, 0.5);
+}
+
+.btn-reserva:active {
+  transform: translateY(0);
+  box-shadow: 0 0 6px rgba(255, 150, 0, 0.3);
+}
+
+
 /* =========================
    SECCIÓN PRODUCTOS DESTACADOS
 ========================= */
@@ -1325,3 +1351,80 @@ html, body {
   z-index: 10;
   box-shadow: 0 2px 5px rgba(0,0,0,0.4);
 }
+
+
+/*estoy haciendo pruebas */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Contenedor del contenido */
+.modal-content {
+  background: #111;
+  padding: 25px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  color: #fff;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Botón de cerrar */
+.cerrar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+/* Inputs y botón */
+#formReserva input, #formReserva button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+}
+
+#formReserva input {
+  background: #222;
+  color: #fff;
+}
+
+#formReserva input:focus {
+  outline: 2px solid #ffae42;
+}
+
+#formReserva button {
+  background: linear-gradient(90deg, #f5a623, #ff7b00);
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+#formReserva button:hover {
+  background: linear-gradient(90deg, #ffb13b, #ff9234);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
