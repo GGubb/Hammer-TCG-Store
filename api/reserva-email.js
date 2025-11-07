@@ -43,6 +43,14 @@ export default async function handler(req, res) {
                   <td style="padding: 8px; color: #444;">${correo}</td>
                 </tr>
                 <tr>
+                  <td style="padding: 8px; font-weight: bold; color: #222;">Nombre:</td>
+                  <td style="padding: 8px; color: #444;">${rut}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px; font-weight: bold; color: #222;">Nombre:</td>
+                  <td style="padding: 8px; color: #444;">${producto}</td>
+                </tr>
+                <tr>
                   <td style="padding: 8px; font-weight: bold; color: #222;">Fecha:</td>
                   <td style="padding: 8px; color: #444;">${new Date(fecha).toLocaleString("es-CL")}</td>
                 </tr>
@@ -69,3 +77,4 @@ export default async function handler(req, res) {
     res.status(500).json({ mensaje: "Error al enviar el correo" });
   }
 }
+
