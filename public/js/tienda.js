@@ -821,6 +821,20 @@ function abrirReserva(nombreProducto) {
 
 window.abrirReserva = abrirReserva;
 
+// 🔔 Función para mostrar notificaciones personalizadas
+function mostrarNotificacion(mensaje, tipo = "exito") {
+  const noti = document.createElement("div");
+  noti.textContent = mensaje;
+  noti.className = `notificacion ${tipo}`;
+  document.body.appendChild(noti);
+
+  // Desvanecer y eliminar después de 3 segundos
+  setTimeout(() => {
+    noti.classList.add("ocultar");
+    setTimeout(() => noti.remove(), 500);
+  }, 3000);
+}
+
 document.getElementById("formReserva").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -829,18 +843,15 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
     nombre: document.getElementById("nombre").value,
     rut: document.getElementById("rut").value,
     correo: document.getElementById("correo").value,
-    fecha: new Date().toISOString()
+    fecha: new Date().toISOString(),
   };
 
   try {
     // 1️⃣ Guardar en Supabase
-    const { data:_ , error } = await supabase
-      .from("reservas")
-      .insert([reserva]);
-
+    const { data: _, error } = await supabase.from("reservas").insert([reserva]);
     if (error) throw error;
 
-    // 2️⃣ Enviar correo usando tu endpoint serverless en Vercel
+    // 2️⃣ Enviar correo
     const resp = await fetch("/api/reserva-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -849,21 +860,21 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
         correo: reserva.correo,
         rut: reserva.rut,
         fecha: reserva.fecha,
-        producto: reserva.producto
+        producto: reserva.producto,
       }),
     });
 
     const resultado = await resp.json();
-
     if (!resp.ok) throw new Error(resultado.mensaje || "Error al enviar correo");
 
-    // 3️⃣ Notificación visual
-    alert(`✅ Reserva enviada correctamente para ${reserva.producto}`);
+    // 3️⃣ Notificación visual en pantalla
+    mostrarNotificacion(`✅ Reserva enviada correctamente para ${reserva.producto}`, "exito");
     document.getElementById("modalReserva").style.display = "none";
 
   } catch (err) {
     console.error(err);
-    alert("❌ Ocurrió un error al enviar la reserva o el correo.");
+    mostrarNotificacion("❌ Ocurrió un error al enviar la reserva o el correo.", "error");
   }
 });
+
 
