@@ -833,16 +833,35 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
   };
 
   try {
-    const { data, error } = await supabase
+    // 1️⃣ Guardar en Supabase
+    const { data:_ , error } = await supabase
       .from("reservas")
       .insert([reserva]);
 
     if (error) throw error;
 
+    // 2️⃣ Enviar correo usando tu endpoint serverless en Vercel
+    const resp = await fetch("/api/reserva-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: reserva.nombre,
+        correo: reserva.correo,
+        fecha: reserva.fecha,
+        producto: reserva.producto
+      }),
+    });
+
+    const resultado = await resp.json();
+
+    if (!resp.ok) throw new Error(resultado.mensaje || "Error al enviar correo");
+
+    // 3️⃣ Notificación visual
     alert(`✅ Reserva enviada correctamente para ${reserva.producto}`);
     document.getElementById("modalReserva").style.display = "none";
+
   } catch (err) {
     console.error(err);
-    alert("❌ Ocurrió un error al enviar la reserva.");
+    alert("❌ Ocurrió un error al enviar la reserva o el correo.");
   }
 });
