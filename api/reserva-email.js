@@ -1,21 +1,40 @@
+import sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Método no permitido' });
+  // Solo permitir método POST
+  if (req.method !== "POST") {
+    return res.status(405).json({ mensaje: "Método no permitido" });
   }
 
-  const data = req.body;
-  console.log('📩 Nueva reserva:', data);
+  try {
+    const { nombre, correo, fecha } = req.body;
 
-  // Acá podés usar nodemailer, Resend, SendGrid, etc.
-  // Ejemplo con console.log por ahora:
-  console.log(`Enviar correo con los datos:
-    Producto: ${data.producto}
-    Nombre: ${data.nombre}
-    RUT: ${data.rut}
-    Correo: ${data.correo}
-    Fecha: ${data.fecha}
-  `);
+    if (!nombre || !correo || !fecha) {
+      return res.status(400).json({ mensaje: "Faltan datos requeridos" });
+    }
 
-  // Respuesta al trigger
-  res.status(200).json({ message: 'Correo enviado (simulado)' });
+    // Construimos el mensaje
+    const msg = {
+      to: "matiasmelo1999@gmail.com", 
+      from: "matiasmelo1999@gmail.com", 
+      subject: "Nueva reserva desde la tienda",
+      text: `Nombre: ${nombre}\nCorreo: ${correo}\nFecha: ${fecha}`,
+      html: `
+        <h2>Nueva reserva</h2>
+        <p><strong>Nombre:</strong> ${nombre}</p>
+        <p><strong>Correo:</strong> ${correo}</p>
+        <p><strong>Fecha:</strong> ${fecha}</p>
+      `,
+    };
+
+    // Enviar el correo
+    await sgMail.send(msg);
+
+    res.status(200).json({ mensaje: "Correo enviado con éxito ✅" });
+  } catch (error) {
+    console.error("Error al enviar el correo:", error);
+    res.status(500).json({ mensaje: "Error al enviar el correo" });
+  }
 }
