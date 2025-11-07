@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { nombre, correo, fecha, rut, producto } = req.body;
+    const { nombre, correo, instagram, fecha, rut, producto } = req.body;
 
     if (!nombre || !correo || !fecha) {
       return res.status(400).json({ mensaje: "Faltan datos requeridos" });
@@ -21,6 +21,7 @@ export default async function handler(req, res) {
       text: `
         Nombre: ${nombre}
         Correo: ${correo}
+        Instagram: ${instagram}
         ${rut ? `RUT: ${rut}` : ""}
         ${producto ? `Producto: ${producto}` : ""}
         Fecha: ${fecha}
@@ -47,6 +48,10 @@ export default async function handler(req, res) {
                 <tr style="background-color: #f2f2f2;">
                   <td style="padding: 8px; font-weight: bold; color: #222;">Correo:</td>
                   <td style="padding: 8px; color: #444;">${correo}</td>
+                </tr>
+                <tr style="background-color: #f2f2f2;">
+                  <td style="padding: 8px; font-weight: bold; color: #222;">Correo:</td>
+                  <td style="padding: 8px; color: #444;">${instagram}</td>
                 </tr>
                 ${rut ? `
                 <tr>
@@ -85,3 +90,4 @@ export default async function handler(req, res) {
     res.status(500).json({ mensaje: "Error al enviar el correo" });
   }
 }
+
