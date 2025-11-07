@@ -761,7 +761,7 @@ window.onload = async () => {
   cargarProductosEnCategoria("Magic");
 };
 
-// ===================== FOOTER (CARGA DESDE SUPABASE) =====================
+// ===================== FOOTER  =====================
 async function cargarFooter() {
   try {
     const { data: contenidos, error } = await supabase
@@ -799,6 +799,8 @@ async function cargarFooter() {
   }
 }
 
+
+// ===================== Reservas  =====================
 function abrirReserva(nombreProducto) {
   const modal = document.getElementById("modalReserva");
   const inputProducto = document.getElementById("producto");
@@ -843,6 +845,7 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
     nombre: document.getElementById("nombre").value,
     rut: document.getElementById("rut").value,
     correo: document.getElementById("correo").value,
+    instagram: document.getElementById("instagram").value,
     fecha: new Date().toISOString(),
   };
 
@@ -858,6 +861,7 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
       body: JSON.stringify({
         nombre: reserva.nombre,
         correo: reserva.correo,
+        instagram: reserva.instagram,
         rut: reserva.rut,
         fecha: reserva.fecha,
         producto: reserva.producto,
@@ -876,5 +880,6 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
     mostrarNotificacion("❌ Ocurrió un error al enviar la reserva o el correo.", "error");
   }
 });
+
 
 
