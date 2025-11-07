@@ -2,9 +2,7 @@
   "name": "hammer-tcg-store",
   "version": "1.0.0",
   "description": "Sitio de Hammer TCG Store con API para reservas y envío de correos.",
-  "main": "index.js",
   "scripts": {
-    "start": "node index.js",
     "build": "echo 'Static site - no build step needed'"
   },
   "dependencies": {
