@@ -1,17 +1,13 @@
 {
-  "name": "Hammer-TCG-Store",
+  "name": "hammer-tcg-store",
   "version": "1.0.0",
-  "description": "Hammer TCG Store",
+  "description": "Sitio de Hammer TCG Store con API para reservas y envío de correos.",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "start": "node index.js",
+    "build": "echo 'Static site - no build step needed'"
   },
   "dependencies": {
-    "next": "14.0.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "@sendgrid/mail": "^8.1.0"
+    "@sendgrid/mail": "^7.7.0"
   }
 }
