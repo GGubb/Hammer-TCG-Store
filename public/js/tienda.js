@@ -847,6 +847,7 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
       body: JSON.stringify({
         nombre: reserva.nombre,
         correo: reserva.correo,
+        rut: reserva.rut,
         fecha: reserva.fecha,
         producto: reserva.producto
       }),
@@ -865,3 +866,4 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
     alert("❌ Ocurrió un error al enviar la reserva o el correo.");
   }
 });
+
