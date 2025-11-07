@@ -8,17 +8,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { nombre, correo, fecha } = req.body;
+    const { nombre, correo, fecha, rut, producto } = req.body;
 
     if (!nombre || !correo || !fecha) {
       return res.status(400).json({ mensaje: "Faltan datos requeridos" });
     }
 
     const msg = {
-      to: "matiasmelo1999@gmail.com", // 📥 destinatario
-      from: "matiasmelo1999@gmail.com", // 📤 remitente verificado en SendGrid
+      to: "matiasmelo1999@gmail.com",
+      from: "matiasmelo1999@gmail.com",
       subject: "🛒 Nueva reserva en Hammer TCG Store",
-      text: `Nombre: ${nombre}\nCorreo: ${correo}\nFecha: ${fecha}`,
+      text: `
+        Nombre: ${nombre}
+        Correo: ${correo}
+        ${rut ? `RUT: ${rut}` : ""}
+        ${producto ? `Producto: ${producto}` : ""}
+        Fecha: ${fecha}
+      `,
       html: `
         <div style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f7f7f7; padding: 20px;">
           <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
@@ -42,6 +48,16 @@ export default async function handler(req, res) {
                   <td style="padding: 8px; font-weight: bold; color: #222;">Correo:</td>
                   <td style="padding: 8px; color: #444;">${correo}</td>
                 </tr>
+                ${rut ? `
+                <tr>
+                  <td style="padding: 8px; font-weight: bold; color: #222;">RUT:</td>
+                  <td style="padding: 8px; color: #444;">${rut}</td>
+                </tr>` : ""}
+                ${producto ? `
+                <tr style="background-color: #f2f2f2;">
+                  <td style="padding: 8px; font-weight: bold; color: #222;">Producto:</td>
+                  <td style="padding: 8px; color: #444;">${producto}</td>
+                </tr>` : ""}
                 <tr>
                   <td style="padding: 8px; font-weight: bold; color: #222;">Fecha:</td>
                   <td style="padding: 8px; color: #444;">${new Date(fecha).toLocaleString("es-CL")}</td>
