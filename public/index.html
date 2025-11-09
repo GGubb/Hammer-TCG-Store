@@ -181,21 +181,39 @@
   <div id="modalReserva" class="modal">
     <div class="modal-content">
       <span class="cerrar">&times;</span>
-      <h2>Reserva tu producto</h2>
-      <p>Estos productos están sujetos a disponibilidad de distribuidores.<br>
-      En caso de no llegar la cantidad solicitada, se respetará el orden de compra. 
-      O de lo contrario será devuelto tu dinero.</p>
 
-      <form id="formReserva">
-        <input type="hidden" id="producto" name="producto">
-        <input type="text" id="nombre" placeholder="Tu nombre" required>
-        <input type="text" id="rut" placeholder="Tu RUT" required>
-        <input type="email" id="correo" placeholder="Tu correo" required>
-        <input type="Instagram" id="instagram" placeholder="@ejemplo" required>
-        <button type="submit">Solicitar reserva</button>
-      </form>
+      <div class="reserva-contenido">
+        <!-- Columna izquierda: formulario + texto -->
+        <div class="reserva-izquierda">
+          <h2>Reserva tu producto</h2>
+          <p>
+            Estos productos están sujetos a disponibilidad de distribuidores.<br>
+            En caso de no llegar la cantidad solicitada, se respetará el orden de compra.
+            O de lo contrario será devuelto tu dinero.
+          </p>
+
+          <form id="formReserva">
+            <input type="hidden" id="producto" name="producto">
+            <input type="text" id="nombre" placeholder="Tu nombre" required>
+            <input type="text" id="rut" placeholder="Tu RUT" required>
+            <input type="email" id="correo" placeholder="Tu correo" required>
+            <input type="text" id="instagram" placeholder="Tu @Instagram" required>
+            <label for="comprobante" class="upload-label">
+              <span>📎 Sube tu comprobante</span>
+              <input type="file" id="comprobante" accept="image/*, application/pdf" required hidden>
+            </label>
+            <span id="file-name" class="file-name">Ningún archivo seleccionado</span>
+            <button type="submit">Envia tu reserva</button>
+          </form>
+        </div>
+
+        <!-- Columna derecha: QR de pago -->
+        <div id="qrPagoContainer" class="qr-container">
+          <h3>Codigo de Pago</h3>
+          <img id="qrPago" src="" alt="QR de pago" style="display:none;" />
+        </div>
+      </div>
     </div>
   </div>
 </body>
-
 </html>
