@@ -1353,7 +1353,7 @@ html, body {
 }
 
 
-/*Seccion de reservas */
+/* ===================== SECCIÓN DE RESERVAS ===================== */
 .modal {
   display: none;
   position: fixed;
@@ -1367,16 +1367,16 @@ html, body {
   align-items: center;
 }
 
-/* Contenedor del contenido */
+/* Contenedor principal del modal */
 .modal-content {
   background: #111;
-  padding: 25px 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
   color: #fff;
   width: 90%;
-  max-width: 420px;
-  text-align: center;
+  max-width: 850px; /* ↑ Más ancho para colocar formulario + QR lado a lado */
+  text-align: left;
   position: relative;
   animation: fadeIn 0.3s ease;
 }
@@ -1384,21 +1384,47 @@ html, body {
 /* Botón de cerrar */
 .cerrar {
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 15px;
+  right: 20px;
   font-size: 24px;
   cursor: pointer;
   color: #ffffff;
 }
 
-/* Inputs y botón */
-#formReserva input, #formReserva button {
+/* ===================== CONTENIDO INTERNO (Formulario + QR) ===================== */
+.reserva-contenido {
+  display: flex; /* ↑ Alinea los dos bloques horizontalmente */
+  flex-direction: row; /* ↑ Dirección horizontal */
+  justify-content: space-between; /* ↑ Espacio entre formulario y QR */
+  align-items: center; /* ↑ Centra ambos verticalmente */
+  gap: 50px; /* ↑ Separación horizontal */
+  margin-top: 20px;
+}
+
+.reserva-izquierda {
+  flex: 1; /* Ocupa más espacio que el QR */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+/* ===================== FORMULARIO ===================== */
+#formReserva {
+  flex: 1; /* Ocupa más espacio que el QR */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#formReserva input, 
+#formReserva button {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
+  padding: 12px;
+  margin-bottom: 15px;
   border-radius: 6px;
   border: none;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 #formReserva input {
@@ -1413,9 +1439,13 @@ html, body {
 #formReserva button {
   background: linear-gradient(90deg, #f5a623, #ff7b00);
   color: #111;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: 0.25s ease;
+  width: 105%;
+  padding: 12px 20px; /* Más alto y con un poco más de aire */
+  font-size: 1.0rem; /* Texto ligeramente más grande */
+  border-radius: 6px; /* Un poco más redondeado */
 }
 
 #formReserva button:hover {
@@ -1423,36 +1453,118 @@ html, body {
   transform: translateY(-2px);
 }
 
+/* ===================== CONTENEDOR DEL QR ===================== */
+.qr-container {
+  flex-shrink: 0; /* ↑ Evita que se reduzca el tamaño */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100px;
+  justify-content: center; /* ↑ Centra verticalmente el contenido del QR */
+  background: #1a1a1a;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 0 12px rgba(255,255,255,0.1);
+  width: 260px; /* ↑ Tamaño fijo del recuadro QR */
+  height:260px ;
+}
+
+.qr-container h3 {
+  margin-bottom: 15px;
+  color: #ffae42;
+  font-size: 1.2rem;
+}
+
+.qr-container img {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 2px solid #ffae42;
+}
+
+/* ===================== ANIMACIÓN ===================== */
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
 
+
+/* ===================== NOTIFICACIONES (alertas) ===================== */
+/* Este bloque muestra mensajes en la esquina superior derecha */
 .notificacion {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #222;
-  color: #fff;
-  padding: 12px 18px;
-  border-radius: 8px;
-  font-size: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  opacity: 1;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  z-index: 9999;
+  position: fixed;          /* fija la notificación en pantalla */
+  top: 20px;                /* separación desde el borde superior */
+  right: 20px;              /* separación desde el borde derecho */
+  background: #222;         /* fondo oscuro por defecto */
+  color: #fff;              /* texto blanco */
+  padding: 12px 18px;       /* espacio interior (aumentar para mayor "aire") */
+  border-radius: 8px;       /* esquinas redondeadas */
+  font-size: 15px;          /* tamaño de texto */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* sombra */
+  opacity: 1;               /* visibilidad inicial */
+  transition: opacity 0.5s ease, transform 0.5s ease; /* animación de salida */
+  z-index: 10050;           /* ↑ Debe quedar por encima del modal (ajusta si hace falta) */
 }
 
+/* Color para notificación de éxito */
 .notificacion.exito {
-  background: #28a745;
+  background: #28a745; /* verde */
 }
 
+/* Color para notificación de error */
 .notificacion.error {
-  background: #dc3545;
+  background: #dc3545; /* rojo */
 }
 
+/* Clase que se agrega antes de eliminar la notificación (animación de salida) */
 .notificacion.ocultar {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+/* ===== BOTÓN DE SUBIDA DE COMPROBANTE ===== */
+.upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(90deg, #f5a623, #ff7b00);
+  color: #111;
+  font-weight: 600;
+  padding: 12px; /* igual que el botón principal */
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.25s ease;
+  width: 100%;
+  font-size: 0.95rem; /* igual que los botones del form */
+}
+
+.upload-label:hover {
+  background: linear-gradient(90deg, #ffb13b, #ff9234);
+  transform: translateY(-2px);
+}
+
+/* Texto del archivo subido */
+.file-name {
+  display: block;
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 700px) {
+  .reserva-contenido {
+    flex-direction: column; /* ↓ En pantallas chicas se apilan */
+    align-items: center;
+    gap: 30px;
+  }
+
+  .qr-container {
+    width: 80%;
+  }
 }
 
