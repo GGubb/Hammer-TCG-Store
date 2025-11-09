@@ -800,20 +800,44 @@ async function cargarFooter() {
 }
 
 
-// ===================== Reservas  =====================
+// ===================== Seccion de Reservas  =====================
+
+// ===================== CARGAR QR DE PAGO =====================
+async function cargarQrPago() {
+  try {
+    const { data: qrData, error: qrError } = await supabase
+      .from("contenido_publico")
+      .select("imagen")
+      .eq("tipo", "Qr_pago")
+      .single();
+
+    const qrImg = document.getElementById("qrPago");
+
+    if (qrError || !qrData) {
+      console.warn("No se encontró el QR de pago en contenido_publico.");
+      qrImg.style.display = "none";
+    } else {
+      qrImg.src = qrData.imagen;
+      qrImg.style.display = "block";
+    }
+  } catch (err) {
+    console.error("Error al cargar el QR:", err);
+  }
+}
+
+
+// Llamar al abrir modal
 function abrirReserva(nombreProducto) {
   const modal = document.getElementById("modalReserva");
   const inputProducto = document.getElementById("producto");
   inputProducto.value = nombreProducto;
 
-  modal.style.display = "flex"; // mostrar modal
+  modal.style.display = "flex";
+  cargarQrPago(); // <-- Añadido aquí
 
-  // Botón cerrar
   modal.querySelector(".cerrar").onclick = () => {
     modal.style.display = "none";
   };
-
-  // Cierre si se hace clic fuera
   window.onclick = (e) => {
     if (e.target === modal) {
       modal.style.display = "none";
@@ -840,6 +864,12 @@ function mostrarNotificacion(mensaje, tipo = "exito") {
 document.getElementById("formReserva").addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const archivo = document.getElementById("comprobante").files[0];
+  if (!archivo) {
+    mostrarNotificacion("❌ Debes adjuntar el comprobante de pago.", "error");
+    return;
+  }
+
   const reserva = {
     producto: document.getElementById("producto").value,
     nombre: document.getElementById("nombre").value,
@@ -850,11 +880,27 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
   };
 
   try {
-    // 1️⃣ Guardar en Supabase
-    const { data: _, error } = await supabase.from("reservas").insert([reserva]);
-    if (error) throw error;
+    // 1️⃣ Subir comprobante al bucket
+    const nombreArchivo = `${Date.now()}_${archivo.name}`;
+    const { data: fileData, error: uploadError } = await supabase.storage
+      .from("comprobantes")
+      .upload(nombreArchivo, archivo);
 
-    // 2️⃣ Enviar correo
+    if (uploadError) throw uploadError;
+
+    // 2️⃣ Obtener URL pública del archivo subido
+    const { data: urlData } = supabase.storage
+      .from("comprobantes")
+      .getPublicUrl(nombreArchivo);
+
+    const comprobanteUrl = urlData.publicUrl;
+    reserva.comprobante = comprobanteUrl;
+
+    // 3️⃣ Guardar reserva en la tabla
+    const { error: insertError } = await supabase.from("reservas").insert([reserva]);
+    if (insertError) throw insertError;
+
+    // 4️⃣ Enviar correo (si ya tienes tu API configurada)
     const resp = await fetch("/api/reserva-email", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -865,21 +911,32 @@ document.getElementById("formReserva").addEventListener("submit", async (e) => {
         rut: reserva.rut,
         fecha: reserva.fecha,
         producto: reserva.producto,
+        comprobante: reserva.comprobante,
       }),
     });
 
     const resultado = await resp.json();
     if (!resp.ok) throw new Error(resultado.mensaje || "Error al enviar correo");
 
-    // 3️⃣ Notificación visual en pantalla
+    // 5️⃣ Notificación visual y cierre del modal
     mostrarNotificacion(`✅ Reserva enviada correctamente para ${reserva.producto}`, "exito");
     document.getElementById("modalReserva").style.display = "none";
+    document.getElementById("formReserva").reset();
 
   } catch (err) {
     console.error(err);
-    mostrarNotificacion("❌ Ocurrió un error al enviar la reserva o el correo.", "error");
+    mostrarNotificacion("❌ Ocurrió un error al enviar la reserva o subir el comprobante.", "error");
   }
 });
 
+// Mostrar nombre del archivo seleccionado
+const fileInput = document.getElementById("comprobante");
+const fileName = document.getElementById("file-name");
 
-
+fileInput.addEventListener("change", () => {
+  if (fileInput.files.length > 0) {
+    fileName.textContent = fileInput.files[0].name;
+  } else {
+    fileName.textContent = "Ningún archivo seleccionado";
+  }
+});
