@@ -209,8 +209,20 @@
 
         <!-- Columna derecha: QR de pago -->
         <div id="qrPagoContainer" class="qr-container">
-          <h3>Codigo de Pago</h3>
-          <img id="qrPago" src="" alt="QR de pago" style="display:none;" />
+          <h3 id="tituloPago">Código de Pago</h3>
+          <!-- Contenedor del contenido (QR o Datos) -->
+          <div id="contenidoPago" class="contenido-pago">
+            <img id="qrPago" src="" alt="QR de pago" style="display:none;" />
+            <div id="datosTransferencia" class="datos-transferencia" style="display: none;">
+              <p><strong>Titular:</strong> Hammer TCG Store Spa</p>
+              <p><strong>RUT:</strong> 77.503.045-3</p>
+              <p><strong>Banco:</strong> Banco de Chile</p>
+              <p><strong>Tipo de cuenta:</strong> Cuenta Vista</p>
+              <p><strong>N° de cuenta:</strong> 00-02174251-50</p>
+              <p><strong>Correo:</strong> hammertcgchile@gmail.com</p>
+            </div>
+          </div>
+          <button id="btnAlternarPago" class="btn-alternar-pago">Ver datos de transferencia</button>
         </div>
       </div>
     </div>

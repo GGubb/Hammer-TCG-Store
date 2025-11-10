@@ -1555,6 +1555,36 @@ html, body {
   text-align: center;
 }
 
+.datos-transferencia {
+  color: #ddd;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  text-align: left;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 220px;
+  box-shadow: 0 0 8px rgba(255,255,255,0.1);
+}
+
+.btn-alternar-pago {
+  margin-top: 15px;
+  background: linear-gradient(90deg, #f5a623, #ff7b00);
+  color: #111;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 15px;
+  transition: 0.25s ease;
+}
+
+.btn-alternar-pago:hover {
+  background: linear-gradient(90deg, #ffb13b, #ff9234);
+  transform: translateY(-2px);
+}
+
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 700px) {
   .reserva-contenido {

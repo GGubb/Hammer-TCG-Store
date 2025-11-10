@@ -940,3 +940,25 @@ fileInput.addEventListener("change", () => {
     fileName.textContent = "Ningún archivo seleccionado";
   }
 });
+
+document.getElementById("btnAlternarPago").addEventListener("click", () => {
+  const qrImg = document.getElementById("qrPago");
+  const datos = document.getElementById("datosTransferencia");
+  const boton = document.getElementById("btnAlternarPago");
+  const titulo = document.getElementById("tituloPago");
+
+  if (qrImg.style.display === "none") {
+    // Mostrar QR
+    qrImg.style.display = "block";
+    datos.style.display = "none";
+    boton.textContent = "Ver datos de transferencia";
+    titulo.textContent = "Código de Pago";
+  } else {
+    // Mostrar datos
+    qrImg.style.display = "none";
+    datos.style.display = "block";
+    boton.textContent = "Volver al código QR";
+    titulo.textContent = "Datos de Transferencia";
+  }
+});
+
